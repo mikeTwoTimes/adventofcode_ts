@@ -15,42 +15,54 @@ function parse(input: string): Range[] {
         });
 }
 
+function skipPower(power: number): number {
+    return Math.pow(10, power) + Math.pow(10, Math.floor((power - 1) / 2));
+}
+
+function maxOfPower(power: number): number {
+    return Math.pow(10, power) - 1;
+}
+
+function invalidMultOfPower(power: number): number {
+    return Math.pow(10, Math.floor(power / 2)) + 1;
+}
+
 function find(range: Range): number {
-    let n = Math.floor(Math.log10(range.first)) + 1;
-    let m = 0;
-    let x = 0;
+    let power = Math.floor(Math.log10(range.first)) + 1;
+    let next = 0;
+    let curr = 0;
     let max = 0;
     let sum = 0;
 
-    if (n % 2 !== 0) {
-        x = Math.pow(10, n) + Math.pow(10, Math.floor((n - 1) / 2));
-        n++;
-        m = Math.pow(10, Math.floor(n / 2)) + 1;
-        max = Math.pow(10, n);
+    if (power % 2 !== 0) {
+        curr = skipPower(power);
+        power++;
+        next = invalidMultOfPower(power);
+        max = maxOfPower(power);
     } else {
-        m = Math.pow(10, Math.floor(n / 2)) + 1;
-        x = m * Math.ceil(range.first / m);
-        max = Math.pow(10, n);
+        next = invalidMultOfPower(power);
+        curr = next * Math.ceil(range.first / next);
+        max = maxOfPower(power);
 
-        if (x >= max) {
-            n++;
-            x = Math.pow(10, n) + Math.pow(10, Math.floor((n - 1) / 2));
-            n++;
-            m = Math.pow(10, Math.floor(n / 2)) + 1;
-            max = Math.pow(10, n);
+        if (curr > max) {
+            power++;
+            curr = skipPower(power);
+            power++;
+            next = invalidMultOfPower(power);
+            max = maxOfPower(power);
         }
     }
 
-    while (x <= range.last) {
-        sum += x;
-        x += m;
+    while (curr <= range.last) {
+        sum += curr;
+        curr += next;
 
-        if (x >= max) {
-            n++;
-            x = Math.pow(10, n) + Math.pow(10, Math.floor((n - 1) / 2));
-            n++;
-            m = Math.pow(10, Math.floor(n / 2)) + 1;
-            max = Math.pow(10, n);
+        if (curr > max) {
+            power++;
+            curr = skipPower(power);
+            power++;
+            next = invalidMultOfPower(power);
+            max = maxOfPower(power);
         }
     }
 
