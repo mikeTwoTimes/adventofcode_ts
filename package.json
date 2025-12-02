@@ -1,0 +1,9 @@
+{
+  "type":"module",
+    "ts-node": {
+    "esm": true
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
+}
